@@ -2,7 +2,7 @@
 
 > This ember addon will zip the root directory of your project.
 
-It outputs an 'archive.zip' in your root directory.
+It outputs an `archive.zip` file in your root directory.
 
 **N.B.** If you already have an `archive.zip` file then it will automatically delete it and create a new one.
 
@@ -72,7 +72,7 @@ My npm scripts from my root package.json:
 
 Finally, my `index.js` is an expansion of this boilerplate:
 
-```
+```js
 var server = new FastBootServer({
   distPath: 'path/to/fastboot-dist'
 });

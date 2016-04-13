@@ -36,12 +36,19 @@ module.exports = {
           // only zip files/folders if they aren't in .gitignore
           if(patterns.indexOf(currentValue) < 0) {
             if(fs.lstatSync(currentValue).isFile()) {
+              // console.log(currentValue);
               zip.addLocalFile(currentValue);
             }
             if(fs.lstatSync(currentValue).isDirectory()) {
-              zip.addLocalFolder(currentValue);
+              zip.addLocalFolder(currentValue, currentValue);
             }
           }
+        });
+
+        // remove compression since certain files can't be DEFLATED
+        // such as .png, .jpg, .eot, etc.
+        zip.getEntries().forEach(function(currentValue) {
+          currentValue.header.method = 0;
         });
 
         // write everything to disk

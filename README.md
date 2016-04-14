@@ -34,43 +34,22 @@ I made this addon to suit my deployment needs:
 1. My server lives in the root directory of my ember app as `index.js`
 1. This addon zips the entire project
 1. A separate addon uploads `archive.zip` to Elastic Beanstalk
-1. I deploy my app as a Docker container
-1. My Dockerfile handles installing my dependencies for my Express server AND subsequently my fastboot build via my npm scripts.
 
 
-Here's my Dockerfile:
-```Dockerfile
-FROM node:4.4.2
-
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-
-COPY package.json /usr/src/app/
-RUN npm install
-COPY . /usr/src/app
-
-RUN npm install -g bower
-RUN bower install --allow-root
-RUN npm install -g ember-cli
-
-CMD [ "npm", "start" ]
-
-EXPOSE 8080
-```
+*Here's how my startup flow looks*
 
 My npm scripts from my root package.json:
 
 ```json
 "scripts": {
   "build": "ember build",
-  "fastboot-install": "npm --prefix ./dist install ./dist",
   "fastboot-server": "node index.js",
-  "start": "npm run build && npm run fastboot-install && npm run fastboot-server",
+  "start": "npm run build && npm run fastboot-server",
   "test": "ember test"
 }
 ```
 
-Finally, my `index.js` is an expansion of this boilerplate:
+And my `index.js` is an expansion of this boilerplate:
 
 ```js
 var server = new FastBootServer({
@@ -86,24 +65,11 @@ var listener = app.listen(8080, function() {
 });
 ```
 
-Essentially I have two `npm install`s:
-
-1. `npm install` that lives in my Dockerfile
-  - This is for my custom Express server (index.js) that's running the ember-fastboot-server middleware
-1. `npm run fastboot-install` in my package.json
-  - The script itself looks weird (`npm --prefix ./dist install ./dist`)
-  - This is because I'm actually running `npm install` on the package.json file that's located in the `/dist` folder
-  - The `/dist` folder is first created from `ember build` (or in this case `npm run build` from the start script)
-
-
 ## Summary
 
 I'd recommend this deployment flow if you're using the ember-fastboot-server middleware.
 
-Even though I can recommend it, I'm not super excited about. So, if you have a different way of doing it I'd love to hear about!
-
-And if you're using this addon for something not related to ember-fastboot I'm interested in hearing about your use case as well :)
-
+This is just one way of deploying ember-fastboot apps that are using the Express middleware. If you have a different way of doing it I'd love to hear about!
 
 ## License
 

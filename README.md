@@ -15,10 +15,10 @@ The following files/folders are not zipped:
 
 ```
 $ ember install ember-cli-deploy-zip
-$ ember deploy
+$ ember deploy <environment>
 ```
 
-Then update your `.gitignore` file:
+You should also update your `.gitignore` file:
 ```
 # .gitignore
 

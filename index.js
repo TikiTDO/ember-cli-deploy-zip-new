@@ -22,25 +22,29 @@ module.exports = {
         }
 
         // returns an array of the root directory
-        var ls = fs.readdirSync(__dirname + '/../../');
+        var ls = fs.readdirSync(__dirname + '/../../dist');
+        console.log(ls);
 
         // returns an array of the .gitignore file
         var patterns = gitignore('.gitignore');
+        // console.log(patterns);
 
         // loop through projects files and folders
         ls.forEach(function(currentValue) {
           if(currentValue === '.git') {
             return;
           }
-
+          var originalValue = currentValue;
+          currentValue = 'dist/' + currentValue;
           // only zip files/folders if they aren't in .gitignore
           if(patterns.indexOf(currentValue) < 0) {
             if(fs.lstatSync(currentValue).isFile()) {
-              // console.log(currentValue);
+              console.log(currentValue);
               zip.addLocalFile(currentValue);
             }
             if(fs.lstatSync(currentValue).isDirectory()) {
-              zip.addLocalFolder(currentValue, currentValue);
+              console.log(currentValue);
+              zip.addLocalFolder(currentValue, originalValue);
             }
           }
         });

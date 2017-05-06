@@ -1,17 +1,18 @@
 {
-  "name": "ember-cli-deploy-zip",
-  "version": "1.0.2",
-  "description": "This ember addon will zip the root directory of your project",
+  "name": "ember-cli-deploy-zip-dist",
+  "version": "1.0.1",
+  "description": "This ember addon will zip the dist directory of your project",
   "keywords": [
     "ember-addon",
     "ember-cli-deploy-plugin",
     "archive",
     "zip",
-    "ember",
-    "fastboot"
+    "ember"
   ],
-  "homepage": "https://github.com/aesopwolf/ember-cli-deploy-zip",
-  "bugs": "https://github.com/aesopwolf/ember-cli-deploy-zip/issues",
+  "homepage": "https://github.com/deepthought97/ember-cli-deploy-zip",
+  "bugs": {
+    "url": "https://github.com/deepthought97/ember-cli-deploy-zip/issues"
+  },
   "license": "ISC",
   "author": "Aesop Wolf <aesopwolf@gmail.com>",
   "main": "index.js",
@@ -20,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/aesopwolf/ember-cli-deploy-zip.git"
+    "url": "git+https://github.com/deepthought97/ember-cli-deploy-zip.git"
   },
   "scripts": {
     "build": "ember build",

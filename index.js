@@ -23,7 +23,7 @@ module.exports = {
 
         // returns an array of the root directory
         var ls = fs.readdirSync(__dirname + '/../../dist');
-        console.log(ls);
+        // console.log(ls);
 
         // returns an array of the .gitignore file
         var patterns = gitignore('.gitignore');

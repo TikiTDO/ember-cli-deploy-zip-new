@@ -1,65 +1,68 @@
 /* jshint node: true */
-'use strict';
-var fs = require('fs');
-var AdmZip = require('adm-zip');
-var gitignore = require('parse-gitignore');
-var BasePlugin = require('ember-cli-deploy-plugin');
+"use strict";
+var fs = require("fs");
+var path = require("path");
+var AdmZip = require("adm-zip");
+var gitignore = require("parse-gitignore");
+var DeployPluginBase = require("ember-cli-deploy-plugin");
 
 module.exports = {
-  name: 'ember-cli-deploy-zip',
-  createDeployPlugin: function(options) {
-    var DeployPlugin = BasePlugin.extend({
+  name: "ember-cli-deploy-zip-new",
+  createDeployPlugin: function (options) {
+    var DeployPlugin = DeployPluginBase.extend({
       name: options.name,
-      setup: function() {
+      defaultConfig: {
+        targetFile: "archive.zip",
+        gitignoreFile: null,
+      },
+      requiredConfig: ["sourcePath", "targetPath"],
+      setup: function () {
         var zip = new AdmZip();
+        var sourcePath = this.readConfig("filePattern");
+        var targetPath = this.readConfig("targetPath");
+        var targetFile = this.readConfig("targetFile");
 
         // delete archive.zip if it exists
         try {
-          fs.accessSync('archive.zip', fs.F_OK);
-          fs.unlinkSync('archive.zip');
+          fs.accessSync(path.joins(targetPath, targetFile), fs.F_OK);
+          fs.unlinkSync(path.joins(targetPath, targetFile));
         } catch (e) {
           // noop
         }
 
         // returns an array of the root directory
-        var ls = fs.readdirSync(__dirname + '/../../dist');
-        // console.log(ls);
+        var ls = fs.readdirSync(sourcePath);
 
-        // returns an array of the .gitignore file
-        var patterns = gitignore('.gitignore');
-        // console.log(patterns);
+        // Optional gitignore parser
+        var patterns = gitignoreFile ? gitignore(gitignoreFile) : null;
 
         // loop through projects files and folders
-        ls.forEach(function(currentValue) {
-          if(currentValue === '.git') {
-            return;
-          }
-          var originalValue = currentValue;
-          currentValue = 'dist/' + currentValue;
+        ls.forEach(function (fileName) {
           // only zip files/folders if they aren't in .gitignore
-          if(patterns.indexOf(currentValue) < 0) {
-            if(fs.lstatSync(currentValue).isFile()) {
-              console.log(currentValue);
-              zip.addLocalFile(currentValue);
-            }
-            if(fs.lstatSync(currentValue).isDirectory()) {
-              console.log(currentValue);
-              zip.addLocalFolder(currentValue, originalValue);
-            }
+          if (patterns && patterns.indexOf(fileName) >= 0) return;
+
+          if (fs.lstatSync(fileName).isFile()) {
+            console.log("Zipping: " + fileName);
+            zip.addLocalFile(fileName);
+          }
+
+          if (fs.lstatSync(fileName).isDirectory()) {
+            console.log("Zipping: " + fileName);
+            zip.addLocalFolder(fileName, originalValue);
           }
         });
 
         // remove compression since certain files can't be DEFLATED
         // such as .png, .jpg, .eot, etc.
-        zip.getEntries().forEach(function(currentValue) {
+        zip.getEntries().forEach(function (currentValue) {
           currentValue.header.method = 0;
         });
 
         // write everything to disk
-        zip.writeZip("archive.zip");
-      }
+        zip.writeZip(path.joins(targetPath, targetFile));
+      },
     });
 
     return new DeployPlugin();
-  }
+  },
 };

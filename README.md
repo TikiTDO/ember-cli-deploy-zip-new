@@ -14,7 +14,7 @@ The following files/folders are not zipped:
 ## Quick Start
 
 ```
-$ ember install ember-cli-deploy-zip-dist
+$ ember install ember-cli-deploy-zip-new
 $ ember deploy <environment>
 ```
 

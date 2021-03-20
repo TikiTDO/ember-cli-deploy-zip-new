@@ -2,35 +2,38 @@
 
 > This ember addon will zip the dist directory of your project.
 
-It outputs an `archive.zip` file in your root directory.
+It outputs an a zip file in a target directory.
 
-**N.B.** If you already have an `archive.zip` file then it will automatically delete it and create a new one.
-
-The following files/folders are not zipped:
-
-1. Anything in your `.gitignore` file
-1. Files named `'.'` and `'..'`
+**N.B.** If the file already exists then it will automatically delete it and create a new one.
 
 ## Quick Start
 
+
+To get up and running quickly, do the following:
+
+* Ensure ember-cli-deploy-build is installed and configured.
+
+* Install this plugin
+
 ```
 $ ember install ember-cli-deploy-zip-new
-$ ember deploy <environment>
 ```
 
-You should also update your `.gitignore` file:
+* Place the following configuration into config/deploy.js
+
+```js
+ENV["zip-new"] = {
+  gitignoreFilePath: "<path-to-optional-gitignore-file>",
+  targetFile: "<name-of-the-zip-file>", // Defaults to "[deployTarget].zip"
+  targetPath: "<path-where-zip-will-be-created>",
+}
 ```
-# .gitignore
 
-archive.zip
+* Run the pipeline
+
 ```
-
-## Use Case
-
-I copied this addon from https://github.com/aesopwolf/ember-cli-deploy-zip to suit my deployment needs:
-
-1. This addon zips the dist project
-1. A separate addon uploads `archive.zip` to Elastic Beanstalk
+$ ember deploy [deployTarget]
+```
 
 
 ## License

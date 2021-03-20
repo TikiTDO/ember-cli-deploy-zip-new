@@ -12,15 +12,17 @@ module.exports = {
     var DeployPlugin = DeployPluginBase.extend({
       name: options.name,
       defaultConfig: {
-        targetFile: "archive.zip",
-        gitignoreFile: null,
+        targetFile: null,
+        gitignoreFilePath: null,
       },
-      requiredConfig: ["sourcePath", "targetPath"],
-      setup: function () {
+      requiredConfig: ["targetPath"],
+      upload: function (context) {
+        console.log({ context });
         var zip = new AdmZip();
-        var sourcePath = this.readConfig("sourcePath");
+        var sourcePath = path.resolve(context.distDir);
         var targetPath = this.readConfig("targetPath");
-        var targetFile = this.readConfig("targetFile");
+        var targetFile = this.readConfig("targetFile") || context.deployTarget;
+        var gitignoreFilePath = this.readConfig("gitignoreFilePath");
 
         // delete archive.zip if it exists
         try {
@@ -34,12 +36,16 @@ module.exports = {
         var ls = fs.readdirSync(sourcePath);
 
         // Optional gitignore parser
-        var patterns = gitignoreFile ? gitignore(gitignoreFile) : null;
+        var patterns = gitignoreFilePath ? gitignore(gitignoreFilePath) : null;
 
         // loop through projects files and folders
         ls.forEach(function (fileName) {
-          // only zip files/folders if they aren't in .gitignore
-          if (patterns && patterns.indexOf(fileName) >= 0) return;
+          fileName = path.join(sourcePath, fileName);
+
+          if (fileName === "." || fileName === "..")
+            if (patterns && patterns.indexOf(fileName) >= 0)
+              // only zip files/folders if they aren't in .gitignore
+              return;
 
           if (fs.lstatSync(fileName).isFile()) {
             console.log("Zipping: " + fileName);
@@ -59,7 +65,9 @@ module.exports = {
         });
 
         // write everything to disk
-        zip.writeZip(path.joins(targetPath, targetFile));
+        const target = path.joins(targetPath, targetFile);
+        console.log("Writing Zip: " + target);
+        zip.writeZip(target);
       },
     });
 

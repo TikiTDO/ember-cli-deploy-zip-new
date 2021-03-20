@@ -18,7 +18,7 @@ module.exports = {
       requiredConfig: ["sourcePath", "targetPath"],
       setup: function () {
         var zip = new AdmZip();
-        var sourcePath = this.readConfig("filePattern");
+        var sourcePath = this.readConfig("sourcePath");
         var targetPath = this.readConfig("targetPath");
         var targetFile = this.readConfig("targetFile");
 

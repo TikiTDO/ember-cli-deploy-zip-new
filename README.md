@@ -1,4 +1,4 @@
-# ember-cli-deploy-zip
+# ember-cli-deploy-zip-new
 
 > This ember addon will zip the dist directory of your project.
 

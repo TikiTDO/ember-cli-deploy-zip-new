@@ -40,21 +40,21 @@ module.exports = {
 
         // loop through projects files and folders
         ls.forEach(function (fileName) {
-          fileName = path.join(sourcePath, fileName);
+          filePath = path.join(sourcePath, fileName);
 
           if (fileName === "." || fileName === "..")
             if (patterns && patterns.indexOf(fileName) >= 0)
               // only zip files/folders if they aren't in .gitignore
               return;
 
-          if (fs.lstatSync(fileName).isFile()) {
-            console.log("Zipping: " + fileName);
-            zip.addLocalFile(fileName);
+          if (fs.lstatSync(filePath).isFile()) {
+            console.log("Zipping: " + filePath);
+            zip.addLocalFile(filePath);
           }
 
-          if (fs.lstatSync(fileName).isDirectory()) {
-            console.log("Zipping: " + fileName);
-            zip.addLocalFolder(fileName, originalValue);
+          if (fs.lstatSync(filePath).isDirectory()) {
+            console.log("Zipping: " + filePath);
+            zip.addLocalFolder(filePath, originalValue);
           }
         });
 
